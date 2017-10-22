@@ -1,3 +1,33 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
+function log (content) {
+  const elem = document.getElementsByTagName('h1').item(0)
+  elem.textContent = content
+}
+
+const superagent = require('superagent')
+
+function superagentRequest () {
+  return new Promise((resolve, reject) => {
+    superagent
+      .get('https://www.google.com')
+      .end((err, res) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(res)
+        }
+      })
+  })
+}
+
+async function main () {
+  try {
+    for (let i = 0; i < 10000; ++i) {
+      await superagentRequest()
+      log(i)
+    }
+  } catch (err) {
+    log(JSON.stringify(err, Object.getOwnPropertyNames(err)))
+  }
+}
+
+main()
